@@ -1,11 +1,12 @@
 import os
 import re
 import torch
+import utils
 from PIL import Image, ImageDraw
-from utils import SpotTheBallUtils
 
 
-def process_and_predict(images_folder, predicted_folder, model, utils):
+def process_and_predict(images_folder, predicted_folder, model,
+                        spot_the_ball_utils):
     for filename in os.listdir(images_folder):
         if filename.endswith('.png'):
             print(f"Processing {filename}")
@@ -27,7 +28,7 @@ def process_and_predict(images_folder, predicted_folder, model, utils):
             utils.draw_cross(draw, (correct_x, correct_y), color="green")
 
             # Predict new coordinates
-            processed_image = utils.preprocess_image(image_path)
+            processed_image = spot_the_ball_utils.preprocess_image(image_path)
             processed_image = processed_image.unsqueeze(0)
             original_image_size = image.size
 
@@ -35,6 +36,8 @@ def process_and_predict(images_folder, predicted_folder, model, utils):
                 output = model(processed_image)
                 predicted_coordinates = output[0].numpy()
 
+            # Due to image normalisation, the guessed coordinates need to
+            # be de-normalised
             new_x, new_y = utils.scale_coordinates(predicted_coordinates[0],
                                                    predicted_coordinates[1],
                                                    original_image_size)
@@ -61,8 +64,8 @@ predicted_images_folder = "images_raw/prediction/"
 if not os.path.exists(predicted_images_folder):
     os.makedirs(predicted_images_folder)
 
-utils = SpotTheBallUtils(model_path)
-model = utils.load_model()
+spot_the_ball_utils = utils.SpotTheBallUtils(model_path)
+model = spot_the_ball_utils.load_model()
 
 process_and_predict(images_training_folder, predicted_images_folder, model,
-                    utils)
+                    spot_the_ball_utils)

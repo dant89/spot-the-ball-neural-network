@@ -1,7 +1,7 @@
 import torch
 from PIL import Image, ImageDraw
 import os
-from utils import SpotTheBallUtils
+import utils
 
 
 def predict_and_draw(image_path, model, utils):
@@ -31,7 +31,7 @@ def predict_and_draw(image_path, model, utils):
     return image, x, y
 
 
-utils = SpotTheBallUtils('spot_the_ball_model.pth')
+utils = utils.SpotTheBallUtils('spot_the_ball_model.pth')
 model = utils.load_model()
 
 images_training_folder = "images_raw/"
