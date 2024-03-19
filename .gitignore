@@ -1,0 +1,8 @@
+__pycache__/
+.idea/
+images_raw/*.png
+images_raw/prediction/*.png
+images_training/*.png
+venv/
+
+*.pth
